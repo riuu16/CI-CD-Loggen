@@ -1,26 +1,28 @@
-name: "Deploy to aws"
+name: Deploy to AWS EC2
 
-#Trigger the workflow from the github ui
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: self-hosted
 
     steps:
-      - name: "Setup nodejs"
-    uses: actions/setup-node@v2
-    with:
-    node-version: "24"
-      
-      - name: "Checkout code"
-      uses: actions/Checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      -  name: "Install dependencies"
-          run: npm install pm2 -g
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-          -name: "Run the tests"
-          run: npm test
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
 
-          -namw: :"Deploy to aws"
-          run:pm2 start src/index.js
+      - name: Run logger app
+        run: |
+          source venv/bin/activate
+          python logger.py
