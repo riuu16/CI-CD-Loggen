@@ -22,7 +22,7 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Run logger app
+      - name: Start Flask web server
         run: |
           source venv/bin/activate
-          python logger.py
+          nohup python app.py > server.log 2>&1 &
